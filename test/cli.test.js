@@ -107,7 +107,7 @@ test('time TZ tests', {
         ? 'do not know how to set timezone on Windows' : false
 }, function (suite) {
     // A stable 'TZ' for 'local' timezone output.
-    tzEnv = objCopy(process.env);
+    let tzEnv = objCopy(process.env);
     tzEnv.TZ = 'Pacific/Honolulu';
 
     test('time: simple.log local long', function (t) {

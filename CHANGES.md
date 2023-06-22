@@ -13,8 +13,13 @@ Known issues:
 
 (nothing yet)
 
-## 2.0.5 (beta)
+## 2.0.6
 
+Switched momentjs for dayjs
+
+## 2.0.5
+
+Contains fix for msg not being passed as string argument, but rather provided via object fields.
 - [pull #575, #278] Change the default "req" serializer to accept expressjs's
   `req.originalUrl` for the "url" field per
   <https://expressjs.com/en/api.html#req.originalUrl>. (By @twelve17 and
