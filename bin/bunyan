@@ -30,7 +30,12 @@ var dayjs;
 try {
     dayjs = require('dayjs');
     var utc = require('dayjs/plugin/utc');
+    var timezone = require('dayjs/plugin/timezone');
+    var isoWeek = require('dayjs/plugin/isoWeek');
+    
     dayjs.extend(utc);
+    dayjs.extend(timezone);
+    dayjs.extend(isoWeek);
 } catch (e) {
     dayjs = null;
 }
@@ -102,11 +107,11 @@ var TIME_LOCAL = 2;
 
 // Timezone formats: output format -> dayjs format string
 var TIMEZONE_UTC_FORMATS = {
-    long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSS[Z][]]',
+    long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSS[Z]]',
     short: 'HH:mm:ss.SSS[Z]'
 };
 var TIMEZONE_LOCAL_FORMATS = {
-    long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSSZ[]]',
+    long:  '[[]YYYY-MM-DD[T]HH:mm:ss.SSSZ]',
     short: 'HH:mm:ss.SSS'
 };
 
@@ -803,11 +808,10 @@ function emitRecord(rec, line, opts, stylize) {
             time = rec.time.substr(11);
         } else {
             var tzFormat;
-            var moTime = dayjs(rec.time);
+            var moTime = dayjs.utc(rec.time);
             switch (opts.timeFormat) {
             case TIME_UTC:
                 tzFormat = TIMEZONE_UTC_FORMATS[short ? 'short' : 'long'];
-                moTime.utc();
                 break;
             case TIME_LOCAL:
                 tzFormat = TIMEZONE_LOCAL_FORMATS[short ? 'short' : 'long'];
@@ -815,7 +819,7 @@ function emitRecord(rec, line, opts, stylize) {
             default:
                 throw new Error('unexpected timeFormat: ' + opts.timeFormat);
             };
-            time = moTime.format(tzFormat);
+            time = dayjs.tz(moTime, process.env.TZ).format(tzFormat);
         }
         time = stylize(time, 'none');
         delete rec.time;
